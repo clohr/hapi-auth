@@ -1,0 +1,4 @@
+{
+	"pageTitle": "My Website",
+	"pageContent": "My hapi website using a reverse proxy to communicate with web services and control user authentication." 
+}
