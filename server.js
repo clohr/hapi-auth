@@ -12,16 +12,6 @@ internals.init = function () {
 		relativeTo: path.join(__dirname, './plugins')
 	};
 	Glue.compose(manifest, manifestOptions, function (err, server) {
-		server.views({
-			engines: {
-				hbs: require('handlebars')
-			},
-			relativeTo: __dirname,
-			path: './views',
-			layoutPath: './views/layout',
-			partialsPath: './views/partials',
-			layout: true
-		});
 		Hoek.assert(!err, err);
 		server.start(function (err) {
 			Hoek.assert(!err, err);

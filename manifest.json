@@ -11,6 +11,8 @@
         }
     ],
     "plugins": {
+        "./api": null,
+        "./cookie": null,
         "good": {
             "reporters": [{
                 "reporter": "good-console",
@@ -20,12 +22,19 @@
                 }]
             }]
         },
-        "./api": null,
-        "./cookie": null,
         "./home": null,
         "./login": null,
         "./reverse": null,
         "./static": null,
-        "./token": null
+        "./token": null,
+        "visionary": {
+            "engines": {
+                "hbs": "handlebars"
+            },
+            "path": "./views",
+            "layoutPath": "./views/layout",
+            "partialsPath": "./views/partials",
+            "layout": true
+        }
     }
 }
