@@ -1,0 +1,31 @@
+{
+    "server": {
+        "app": {
+            "description": "hapi-yar"
+        }
+    },
+    "connections": [
+        {
+            "port": 9000,
+            "labels": ["web-ui", "api"]
+        }
+    ],
+    "plugins": {
+        "good": {
+            "reporters": [{
+                "reporter": "good-console",
+                "args": [{
+                    "log": "*",
+                    "response": "*"
+                }]
+            }]
+        },
+        "./api": null,
+        "./cookie": null,
+        "./home": null,
+        "./login": null,
+        "./reverse": null,
+        "./static": null,
+        "./token": null
+    }
+}

@@ -1,6 +1,6 @@
 'use strict';
 
-var endpoints = require('../../../lib/endpoints');
+var endpoints = require('../../lib/endpoints');
 
 var internals = {
 	makeXHR: function makeXHR(el) {
@@ -13,7 +13,7 @@ var internals = {
 			}
 		});
 		promise.then(function (resp) {
-			var template = require('../../../views/partials/pageData.hbs');
+			var template = require('../../views/partials/pageData.hbs');
 			var content = document.getElementById('pageContent');
 			if (!content) {
 				console.log('pageContent not found');

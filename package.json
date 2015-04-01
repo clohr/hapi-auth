@@ -1,7 +1,7 @@
 {
   "name": "hapi-yar",
   "version": "1.0.0",
-  "description": "Reverse proxy with yar",
+  "description": "Reverse proxy with yar for application authentication",
   "main": "server.js",
   "scripts": {
     "test": ""
@@ -12,7 +12,8 @@
   },
   "keywords": [
     "hapi",
-    "yar"
+    "yar",
+    "token"
   ],
   "author": "Christian Lohr <christian.lohr@gmail.com>",
   "license": "MIT",
@@ -21,6 +22,9 @@
   },
   "homepage": "https://github.com/clohr/hapi-yar",
   "dependencies": {
+    "glue": "^2.0.0",
+    "good": "^5.1.2",
+    "good-console": "^4.1.0",
     "handlebars": "^3.0.1",
     "hapi": "^8.4.0",
     "hoek": "^2.12.0",

@@ -1,49 +1,32 @@
 'use strict';
 
-var Hapi = require('hapi');
 var Hoek = require('hoek');
+var Glue = require('glue');
+var path = require('path');
 
 var internals = {};
 
 internals.init = function () {
-
-	var server = new Hapi.Server();
-	server.connection({ port: 9000 });
-
-	server.views({
-		engines: {
-			hbs: require('handlebars')
-		},
-		relativeTo: __dirname,
-		path: './views',
-		layoutPath: './views/layout',
-		partialsPath: './views/partials',
-		layout: true
-	});
-
-	server.register([
-			{register: require('./plugins/api')},
-			{register: require('./plugins/cookie')},
-			{register: require('./plugins/home')},
-			{register: require('./plugins/login')},
-			{register: require('./plugins/reverse')}
-		], function(err) {
+	var manifest = require('./manifest.json');
+	var manifestOptions = {
+		relativeTo: path.join(__dirname, './plugins')
+	};
+	Glue.compose(manifest, manifestOptions, function (err, server) {
+		server.views({
+			engines: {
+				hbs: require('handlebars')
+			},
+			relativeTo: __dirname,
+			path: './views',
+			layoutPath: './views/layout',
+			partialsPath: './views/partials',
+			layout: true
+		});
 		Hoek.assert(!err, err);
-		server.start(function () {
+		server.start(function (err) {
+			Hoek.assert(!err, err);
 			console.log('Server running at:', server.info.uri);
 		});
-	});
-
-	server.route({
-		// static files
-		method: 'GET',
-		path: '/dist/{filename*}',
-		handler: {
-			directory: {
-				path: './client/dist',
-				index: false
-			}
-		}
 	});
 };
 
