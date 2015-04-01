@@ -1,6 +1,8 @@
 # hapi-yar
 Basic hapi reverse proxy setup with yar
 
+![Hapi-yar](image/pirate.jpg)
+
 ## Auth Flow
 * User visits site for first time, no cookie, generate token payload, serialize, then store in an HTTP only cookie
 * User visits site with expired cookie, generate a new token payload, serialize, then and store in an HTTP only cookie
