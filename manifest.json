@@ -22,8 +22,6 @@
                 }]
             }]
         },
-        "./home": null,
-        "./login": null,
         "./reverse": null,
         "./static": null,
         "./token": null,
@@ -35,6 +33,7 @@
             "layoutPath": "./views/layout",
             "partialsPath": "./views/partials",
             "layout": true
-        }
+        },
+        "./ui": null
     }
 }
