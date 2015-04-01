@@ -1,6 +1,8 @@
 # hapi-yar
 Basic hapi reverse proxy setup with yar
 
+![Hapi-yar](image/pirate.jpg)
+
 ## Auth Flow
 
 ### Guest
