@@ -2,12 +2,7 @@
 Basic hapi reverse proxy setup with yar
 
 ## Auth Flow
-
-### Guest
-* User visits site for first time, no cookie, hapi plugin generates token payload and stores in HTTP only cookie
-* User visits site for second time with expired cookie, hapi plugin generates a new auth token payload and stores in HTTP only cookie
-* User visits site for second time with valid cookie older than 5 minutes, hapi plugin pro-actively re-auths user
-
-### Authorized
-* User visits Authorized endpoint after 5 minutes of receiving valid token and is within the re-auth window, user is re-auth'd
-* User visits Authorized endpoint after 5 minutes of receiving valid token and is beyond re-auth window, user is prompted to login
+* User visits site for first time, no cookie, generate token payload, serialize, then store in an HTTP only cookie
+* User visits site with expired cookie, generate a new token payload, serialize, then and store in an HTTP only cookie
+* User visits site with invalid token TOKEN_FRESHNESS threshold but has not expired, pro-actively re-auth the user
+* User visits site with invalid token TOKEN_FRESHNESS threshold and is expired, generate a new token payload, serialize, then and store in an HTTP only cookie
