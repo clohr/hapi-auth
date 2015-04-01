@@ -3,11 +3,11 @@
 // simple setup for auth cookie
 exports.register = function(server, options, next) {
     server.state('auth_payload', {
-        ttl: null,
-        isSecure: false,
-        path: '/api',
-        isHttpOnly: true,
-        clearInvalid: true
+        ttl: options.ttl,
+        isSecure: options.isSecure,
+        path: options.path,
+        isHttpOnly: options.isHttpOnly,
+        clearInvalid: options.clearInvalid
     });
     return next();
 };

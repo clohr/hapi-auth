@@ -4,10 +4,10 @@
 exports.register = function(server, options, next) {
 	server.route({
 		method: 'GET',
-		path: '/dist/{filename*}',
+		path: options.path,
 		handler: {
 			directory: {
-				path: './client/dist',
+				path: options.dirpath,
 				index: false
 			}
 		}

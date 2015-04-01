@@ -11,8 +11,17 @@
         }
     ],
     "plugins": {
-        "./api": null,
-        "./cookie": null,
+        "./api": {
+            "method": "GET",
+            "path": "/api/{p*}" 
+        },
+        "./cookie": {
+            "ttl": null,
+            "isSecure": false,
+            "path": "/api",
+            "isHttpOnly": true,
+            "clearInvalid": true
+        },
         "good": {
             "reporters": [{
                 "reporter": "good-console",
@@ -22,8 +31,15 @@
                 }]
             }]
         },
-        "./reverse": null,
-        "./static": null,
+        "./reverse": {
+            "method": "GET",
+            "path": "/service/{p*}",
+            "proxypath": "http://localhost:9000/api/"
+        },
+        "./static": {
+            "path": "/dist/{filename*}",
+            "dirpath": "./client/dist"
+        },
         "./token": null,
         "visionary": {
             "engines": {
