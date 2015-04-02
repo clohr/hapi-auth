@@ -1,9 +1,4 @@
 {
-    "server": {
-        "app": {
-            "description": "hapi-yar"
-        }
-    },
     "connections": [
         {
             "port": 9000,
@@ -41,6 +36,7 @@
             "dirpath": "./client/dist"
         },
         "./token": null,
+        "./ui": null,
         "visionary": {
             "engines": {
                 "hbs": "handlebars"
@@ -49,7 +45,6 @@
             "layoutPath": "./views/layout",
             "partialsPath": "./views/partials",
             "layout": true
-        },
-        "./ui": null
+        }
     }
 }

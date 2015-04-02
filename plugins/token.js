@@ -10,18 +10,14 @@ var R = require('ramda');
 
 var internals = {
     setUpAuthCookie: function(reply) {
-        tokenService.getAndSetToken(null).then(function(payload) {
-            var fullPayload = R.compose(R.assoc('createdAt', Date.now()))(payload);
-            reply.state(AUTH_PAYLOAD, serialize(fullPayload));
-            return reply.continue();
-        });
+        var payload = tokenService.getAndSetToken(null);
+        var fullPayload = R.compose(R.assoc('createdAt', Date.now()))(payload);
+        reply.state(AUTH_PAYLOAD, serialize(fullPayload));
     },
     reAuthCookie: function (reply, token) {
-		tokenService.reAuthenticateToken(token).then(function(payload) {
-            payload.createdAt = Date.now();
-            reply.state(AUTH_PAYLOAD, serialize(payload));
-            return reply.continue();
-        });
+		var payload = tokenService.reAuthenticateToken(token);
+        payload.createdAt = Date.now();
+        reply.state(AUTH_PAYLOAD, serialize(payload));
     },
     msToMinutes: R.divide(R.__, 60000)
 };
