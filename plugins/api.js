@@ -5,7 +5,9 @@ exports.register = function (server, options, next) {
 		method: options.method,
 		path: options.path,
 		handler: function (request, reply) {
-			var json = require('../data/content.json');
+			var filename = request.params.p || 'home';
+			var filepath = '../data/' + filename + '.json';
+			var json = require(filepath);
 			return reply(json).type('application/json');
 		}
 	});

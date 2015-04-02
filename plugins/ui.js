@@ -14,7 +14,7 @@ exports.register = function (server, options, next) {
 				var endpoints = require('../lib/endpoints');
 				var promise = endpoints.handleData({
 					'method': 'GET',
-					'path': 'http://localhost:9000/service/content',
+					'path': 'http://localhost:9000/service/content/home',
 					'headers': {
 						'Content-Type': 'application/json'
 					}
@@ -28,12 +28,28 @@ exports.register = function (server, options, next) {
 			}
 		}
 	});
-	// login
+	// page2
 	server.route({
 		method: 'GET',
-		path: '/login',
-		handler: function (request, reply) {
-			return reply.view('login');
+		path: '/page2',
+		config: {
+            description: 'Returns a Node route',
+			handler: function (request, reply) {
+				var endpoints = require('../lib/endpoints');
+				var promise = endpoints.handleData({
+					'method': 'GET',
+					'path': 'http://localhost:9000/service/content/page2',
+					'headers': {
+						'Content-Type': 'application/json'
+					}
+				});
+				promise.then(function (resp) {
+					return reply.view('page2', JSON.parse(resp.entity));
+				}).catch(function (err) {
+					Hoek.assert(!err, err);
+					return reply.continue();
+				});
+			}
 		}
 	});
 	return next();

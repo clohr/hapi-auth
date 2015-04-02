@@ -1,5 +1,5 @@
 {
-	"authToken": "1234567890AUTH",
+	"authToken": "1234567890REAUTH",
 	"reauthToken": "0987654321",
 	"expiresIn": 300
 }
