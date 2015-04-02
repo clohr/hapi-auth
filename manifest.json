@@ -11,9 +11,9 @@
             "path": "/api/{p*}" 
         },
         "./cookie": {
-            "ttl": 300000,
+            "ttl": 180000,
             "isSecure": false,
-            "path": "/api",
+            "path": "/",
             "isHttpOnly": true,
             "clearInvalid": true
         },
@@ -25,6 +25,11 @@
                     "response": "*"
                 }]
             }]
+        },
+        "./reverse": {
+            "method": "GET",
+            "path": "/service/content/{p*}",
+            "proxypath": "http://localhost:9000/api/"
         },
         "./static": {
             "path": "/dist/{filename*}",

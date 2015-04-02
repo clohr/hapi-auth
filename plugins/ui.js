@@ -14,13 +14,13 @@ exports.register = function (server, options, next) {
 				var endpoints = require('../lib/endpoints');
 				var promise = endpoints.handleData({
 					'method': 'GET',
-					'path': 'http://localhost:9000/api/home',
+					'path': 'http://localhost:9000/service/content/home',
 					'headers': {
 						'Content-Type': 'application/json'
 					}
 				});
 				promise.then(function (resp) {
-					return reply.view('home', resp.entity);
+					return reply.view('home', JSON.parse(resp.entity));
 				}).catch(function (err) {
 					Hoek.assert(!err, err);
 					return reply.continue();
@@ -38,13 +38,13 @@ exports.register = function (server, options, next) {
 				var endpoints = require('../lib/endpoints');
 				var promise = endpoints.handleData({
 					'method': 'GET',
-					'path': 'http://localhost:9000/api/page2',
+					'path': 'http://localhost:9000/service/content/page2',
 					'headers': {
 						'Content-Type': 'application/json'
 					}
 				});
 				promise.then(function (resp) {
-					return reply.view('page2', resp.entity);
+					return reply.view('page2', JSON.parse(resp.entity));
 				}).catch(function (err) {
 					Hoek.assert(!err, err);
 					return reply.continue();

@@ -19,7 +19,7 @@ var internals = {
 			if (!content) {
 				console.log('pageContent not found');
 			}
-			content.innerHTML = template(resp.entity);
+			content.innerHTML = template(parse(resp.entity));
 		}).catch(function (err) {
 			console.log(err);
 		});
