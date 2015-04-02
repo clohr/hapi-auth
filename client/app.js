@@ -1,3 +1,3 @@
 'use strict';
 
-require('./app/clientRoute')('clientLink');
+require('./src/clientRoute')('clientLink');

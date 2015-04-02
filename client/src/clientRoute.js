@@ -1,6 +1,7 @@
 'use strict';
 
 var endpoints = require('../../lib/endpoints');
+var parse = require('../../lib/utils').parse;
 
 var internals = {
 	makeXHR: function makeXHR(el) {
@@ -18,8 +19,7 @@ var internals = {
 			if (!content) {
 				console.log('pageContent not found');
 			}
-			resp.pageTitle = 'My Website: Client-Side Request';
-			content.innerHTML = template(resp);
+			content.innerHTML = template(parse(resp.entity));
 		}).catch(function (err) {
 			console.log(err);
 		});

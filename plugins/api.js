@@ -1,7 +1,8 @@
 'use strict';
 
+// handles real services end-point
 exports.register = function (server, options, next) {
-	server.route({ // handle real end-point
+	server.route({
 		method: options.method,
 		path: options.path,
 		handler: function (request, reply) {

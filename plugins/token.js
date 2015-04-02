@@ -33,7 +33,6 @@ exports.register = function(server, options, next) {
 
         parsedToken = parse(token);
         tokenLife = internals.msToMinutes(Date.now() - parsedToken.createdAt);
-
         if (tokenLife > TOKEN_FRESHNESS) {
 			// token exists and needs to be pro-actively re-authed before continuing action
 			internals.reAuthCookie(reply, token);
