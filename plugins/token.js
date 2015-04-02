@@ -26,6 +26,10 @@ exports.register = function(server, options, next) {
         var token = request && request.state[AUTH_PAYLOAD];
         var parsedToken, tokenLife;
 
+        if (request.path.indexOf('service') < 0) {
+            return reply.continue();
+        }
+
         if (!token) {
 			// token does not exist, get a token before continuing action
 			internals.setUpAuthCookie(reply);

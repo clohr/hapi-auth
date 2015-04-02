@@ -26,11 +26,6 @@
                 }]
             }]
         },
-        "./reverse": {
-            "method": "GET",
-            "path": "/service/content/{p*}",
-            "proxypath": "http://localhost:9000/api/"
-        },
         "./static": {
             "path": "/dist/{filename*}",
             "dirpath": "./client/dist"

@@ -24,7 +24,7 @@ var internals = {
 			if (!content) {
 				console.log('pageContent not found');
 			}
-			content.innerHTML = template(parse(resp.entity));
+			content.innerHTML = template(resp.entity);
 		}).catch(function (err) {
 			console.log(err);
 		});
