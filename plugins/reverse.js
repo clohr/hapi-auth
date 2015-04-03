@@ -7,6 +7,7 @@ exports.register = function(server, options, next) {
 		path: options.path,
 		handler: {
 			proxy: {
+				passThrough: options.passThrough,
 				mapUri: function (request, callback) {
 					callback(null, options.proxypath + request.params.p);
 				}

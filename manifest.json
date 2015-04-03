@@ -28,6 +28,7 @@
         },
         "./reverse": {
             "method": "GET",
+            "passThrough": false,
             "path": "/service/content/{p*}",
             "proxypath": "http://localhost:9000/api/"
         },

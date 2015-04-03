@@ -9,25 +9,23 @@ var R = require('ramda');
 var Iron = require('iron');
 
 var internals = {
-    setUpAuthCookie: function(reply) {
+    setUpAuthCookie: function(server, reply) {
         var payload = tokenService.getAndSetToken(null);
         var fullPayload = R.compose(R.assoc('createdAt', Date.now()))(payload);
-        console.log('setUpAuthCookie:', payload);
         return Iron.seal(fullPayload, IRON_PASSWORD, Iron.defaults, function (err, sealedObj) {
             Hoek.assert(!err, err);
             reply.state(AUTH_PAYLOAD, sealedObj);
-            console.log('seal auth token:', sealedObj);
+            server.app.session = sealedObj;
             return reply.continue();
         });
     },
-    reAuthCookie: function (reply, token) {
+    reAuthCookie: function (server, reply, token) {
         var payload = tokenService.reAuthenticateToken(token);
         payload.createdAt = Date.now();
-        console.log('reAuthCookie:', payload);
         return Iron.seal(payload, IRON_PASSWORD, Iron.defaults, function (err, sealedObj) {
             Hoek.assert(!err, err);
             reply.state(AUTH_PAYLOAD, sealedObj);
-            console.log('seal re-auth token:', sealedObj);
+            server.app.session = sealedObj;
             return reply.continue();
         });
     },
@@ -36,13 +34,12 @@ var internals = {
 
 exports.register = function(server, options, next) {
     server.ext('onPreAuth', function(request, reply) {
-        var token = request && request.state[AUTH_PAYLOAD];
+        var token = server.app.session || request.state && request.state[AUTH_PAYLOAD];
         if (!token) {
             // token does not exist, get a token before continuing action
             console.log('token does not exist, get a token before continuing action');
-            return internals.setUpAuthCookie(reply);
+            return internals.setUpAuthCookie(server, reply);
         }
-
         return Iron.unseal(token, IRON_PASSWORD, Iron.defaults, function (err, unsealed) {
             var tokenLife;
             Hoek.assert(!err, err);
@@ -50,7 +47,7 @@ exports.register = function(server, options, next) {
             if (tokenLife > TOKEN_FRESHNESS) {
                 // token exists and needs to be pro-actively re-authed before continuing action
                 console.log('token exists and needs to be pro-actively re-authed before continuing action');
-                return internals.reAuthCookie(reply, unsealed.auth_token);
+                return internals.reAuthCookie(server, reply, unsealed.authToken);
             }
             // token exists and is valid and within freshness limit, continue action
             return reply.continue();
