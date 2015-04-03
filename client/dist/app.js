@@ -6,9 +6,15 @@ require('./src/clientRoute')('clientLink');
 'use strict';
 
 var endpoints = require('../../lib/endpoints');
-var parse = require('../../lib/utils').parse;
 
 var internals = {
+	parse: function parse(content) {
+		var val = decodeURIComponent(content);
+		if (typeof val === 'string') {
+			val = JSON.parse(val);
+		}
+		return val;
+	},
 	makeXHR: function makeXHR(el) {
 		var url = el.getAttribute('href') || '';
 		var promise = endpoints.handleData({
@@ -21,10 +27,12 @@ var internals = {
 		promise.then(function (resp) {
 			var template = require('../../views/partials/pageData.hbs');
 			var content = document.getElementById('pageContent');
+			var parsed = internals.parse(resp.entity);
 			if (!content) {
 				console.log('pageContent not found');
 			}
-			content.innerHTML = template(parse(resp.entity));
+			parsed.pageContent = 'This request was made using XHR';
+			content.innerHTML = template(parsed);
 		}).catch(function (err) {
 			console.log(err);
 		});
@@ -46,7 +54,7 @@ module.exports = function (elemId) {
 };
 
 
-},{"../../lib/endpoints":3,"../../lib/utils":4,"../../views/partials/pageData.hbs":58}],3:[function(require,module,exports){
+},{"../../lib/endpoints":3,"../../views/partials/pageData.hbs":57}],3:[function(require,module,exports){
 'use strict';
 
 var Hoek = require('hoek');
@@ -78,38 +86,7 @@ Endpoints.prototype.handleData = function(opt){
 };
 
 module.exports = new Endpoints();
-},{"hoek":13,"rest":17,"rest/interceptor/errorCode":22,"rest/interceptor/mime":23}],4:[function(require,module,exports){
-'use strict';
-
-var utils = {};
-
-utils.isJSON = function(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-};
-
-utils.typeCheck = function(value) {
-    return ({}).toString.call(value).slice(8, -1).toLowerCase();
-};
-
-utils.serialize = function(value) {
-    if (utils.typeCheck(value) !== 'string') {
-        value = JSON.stringify(value);
-    }
-    return encodeURIComponent(value);
-};
-
-utils.parse = function(value) {
-    value = decodeURIComponent(value);
-    return utils.isJSON(value) ? JSON.parse(value) : value;
-};
-
-module.exports = utils;
-},{}],5:[function(require,module,exports){
+},{"hoek":12,"rest":16,"rest/interceptor/errorCode":21,"rest/interceptor/mime":22}],4:[function(require,module,exports){
 (function (global){
 "use strict";
 /*globals Handlebars: true */
@@ -158,7 +135,7 @@ Handlebars['default'] = Handlebars;
 
 exports["default"] = Handlebars;
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./handlebars/base":6,"./handlebars/exception":7,"./handlebars/runtime":8,"./handlebars/safe-string":9,"./handlebars/utils":10}],6:[function(require,module,exports){
+},{"./handlebars/base":5,"./handlebars/exception":6,"./handlebars/runtime":7,"./handlebars/safe-string":8,"./handlebars/utils":9}],5:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -402,7 +379,7 @@ var createFrame = function(object) {
   return frame;
 };
 exports.createFrame = createFrame;
-},{"./exception":7,"./utils":10}],7:[function(require,module,exports){
+},{"./exception":6,"./utils":9}],6:[function(require,module,exports){
 "use strict";
 
 var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
@@ -434,7 +411,7 @@ function Exception(message, node) {
 Exception.prototype = new Error();
 
 exports["default"] = Exception;
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 var Utils = require("./utils");
 var Exception = require("./exception")["default"];
@@ -655,7 +632,7 @@ exports.noop = noop;function initData(context, data) {
   }
   return data;
 }
-},{"./base":6,"./exception":7,"./utils":10}],9:[function(require,module,exports){
+},{"./base":5,"./exception":6,"./utils":9}],8:[function(require,module,exports){
 "use strict";
 // Build out our basic SafeString type
 function SafeString(string) {
@@ -667,7 +644,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function() {
 };
 
 exports["default"] = SafeString;
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 /*jshint -W004 */
 var escape = {
@@ -771,18 +748,18 @@ exports.blockParams = blockParams;function appendContextPath(contextPath, id) {
 }
 
 exports.appendContextPath = appendContextPath;
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":5}],12:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":4}],11:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":11}],13:[function(require,module,exports){
+},{"handlebars/runtime":10}],12:[function(require,module,exports){
 module.exports = require('./lib');
 
-},{"./lib":15}],14:[function(require,module,exports){
+},{"./lib":14}],13:[function(require,module,exports){
 (function (Buffer){
 // Declare internals
 
@@ -918,7 +895,7 @@ internals.safeCharCodes = (function () {
 }());
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":59}],15:[function(require,module,exports){
+},{"buffer":58}],14:[function(require,module,exports){
 (function (process,Buffer){
 // Load modules
 
@@ -1859,7 +1836,7 @@ exports.shallow = function (source) {
 };
 
 }).call(this,require("/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),require("buffer").Buffer)
-},{"./escape":14,"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":69,"buffer":59,"crypto":63,"path":70,"util":72}],16:[function(require,module,exports){
+},{"./escape":13,"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":68,"buffer":58,"crypto":62,"path":69,"util":71}],15:[function(require,module,exports){
 /*
  * Copyright 2012-2013 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2090,7 +2067,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"./util/mixin":35}],17:[function(require,module,exports){
+},{"./util/mixin":34}],16:[function(require,module,exports){
 /*
  * Copyright 2014 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2117,7 +2094,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"./client/default":19,"./client/xhr":20}],18:[function(require,module,exports){
+},{"./client/default":18,"./client/xhr":19}],17:[function(require,module,exports){
 /*
  * Copyright 2014 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2183,7 +2160,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /*
  * Copyright 2014 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2309,7 +2286,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"../client":18}],20:[function(require,module,exports){
+},{"../client":17}],19:[function(require,module,exports){
 /*
  * Copyright 2012-2014 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2485,7 +2462,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"../UrlBuilder":16,"../client":18,"../util/normalizeHeaderName":36,"../util/responsePromise":37,"when":57}],21:[function(require,module,exports){
+},{"../UrlBuilder":15,"../client":17,"../util/normalizeHeaderName":35,"../util/responsePromise":36,"when":56}],20:[function(require,module,exports){
 /*
  * Copyright 2012-2015 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2652,7 +2629,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"./client":18,"./client/default":19,"./util/mixin":35,"./util/responsePromise":37,"when":57}],22:[function(require,module,exports){
+},{"./client":17,"./client/default":18,"./util/mixin":34,"./util/responsePromise":36,"when":56}],21:[function(require,module,exports){
 /*
  * Copyright 2012-2013 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2701,7 +2678,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"../interceptor":21,"when":57}],23:[function(require,module,exports){
+},{"../interceptor":20,"when":56}],22:[function(require,module,exports){
 /*
  * Copyright 2012-2014 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2813,7 +2790,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"../interceptor":21,"../mime":26,"../mime/registry":27,"when":57}],24:[function(require,module,exports){
+},{"../interceptor":20,"../mime":25,"../mime/registry":26,"when":56}],23:[function(require,module,exports){
 /*
  * Copyright 2012-2013 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2874,7 +2851,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"../UrlBuilder":16,"../interceptor":21}],25:[function(require,module,exports){
+},{"../UrlBuilder":15,"../interceptor":20}],24:[function(require,module,exports){
 /*
  * Copyright 2015 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -2930,7 +2907,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"../interceptor":21,"../util/mixin":35,"../util/uriTemplate":39}],26:[function(require,module,exports){
+},{"../interceptor":20,"../util/mixin":34,"../util/uriTemplate":38}],25:[function(require,module,exports){
 /*
 * Copyright 2014 the original author or authors
 * @license MIT, see LICENSE.txt for details
@@ -2985,7 +2962,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /*
  * Copyright 2012-2014 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3102,7 +3079,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"../mime":26,"./type/application/hal":28,"./type/application/json":29,"./type/application/x-www-form-urlencoded":30,"./type/multipart/form-data":31,"./type/text/plain":32,"when":57}],28:[function(require,module,exports){
+},{"../mime":25,"./type/application/hal":27,"./type/application/json":28,"./type/application/x-www-form-urlencoded":29,"./type/multipart/form-data":30,"./type/text/plain":31,"when":56}],27:[function(require,module,exports){
 /*
  * Copyright 2013-2015 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3243,7 +3220,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"../../../interceptor/pathPrefix":24,"../../../interceptor/template":25,"../../../util/find":33,"../../../util/lazyPromise":34,"../../../util/responsePromise":37,"when":57}],29:[function(require,module,exports){
+},{"../../../interceptor/pathPrefix":23,"../../../interceptor/template":24,"../../../util/find":32,"../../../util/lazyPromise":33,"../../../util/responsePromise":36,"when":56}],28:[function(require,module,exports){
 /*
  * Copyright 2012-2015 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3292,7 +3269,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /*
  * Copyright 2012 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3384,7 +3361,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /*
  * Copyright 2014 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3459,7 +3436,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /*
  * Copyright 2012 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3490,7 +3467,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /*
  * Copyright 2013 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3533,7 +3510,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /*
  * Copyright 2013 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3590,7 +3567,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"when":57}],35:[function(require,module,exports){
+},{"when":56}],34:[function(require,module,exports){
 /*
  * Copyright 2012-2013 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3640,7 +3617,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /*
  * Copyright 2012 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3680,7 +3657,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /*
  * Copyright 2014-2015 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -3822,7 +3799,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"./normalizeHeaderName":36,"when":57}],38:[function(require,module,exports){
+},{"./normalizeHeaderName":35,"when":56}],37:[function(require,module,exports){
 /*
  * Copyright 2015 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -4003,7 +3980,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /*
  * Copyright 2015 the original author or authors
  * @license MIT, see LICENSE.txt for details
@@ -4176,7 +4153,7 @@ exports.shallow = function (source) {
 	// Boilerplate for AMD and Node
 ));
 
-},{"./uriEncoder":38}],40:[function(require,module,exports){
+},{"./uriEncoder":37}],39:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4195,7 +4172,7 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./Scheduler":41,"./env":53,"./makePromise":55}],41:[function(require,module,exports){
+},{"./Scheduler":40,"./env":52,"./makePromise":54}],40:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4277,7 +4254,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4305,7 +4282,7 @@ define(function() {
 	return TimeoutError;
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
-},{}],43:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4362,7 +4339,7 @@ define(function() {
 
 
 
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4653,7 +4630,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../apply":43,"../state":56}],45:[function(require,module,exports){
+},{"../apply":42,"../state":55}],44:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4815,7 +4792,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],46:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4844,7 +4821,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],47:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4866,7 +4843,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../state":56}],48:[function(require,module,exports){
+},{"../state":55}],47:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4933,7 +4910,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -4959,7 +4936,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],50:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5039,7 +5016,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../TimeoutError":42,"../env":53}],51:[function(require,module,exports){
+},{"../TimeoutError":41,"../env":52}],50:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5127,7 +5104,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../env":53,"../format":54}],52:[function(require,module,exports){
+},{"../env":52,"../format":53}],51:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5167,7 +5144,7 @@ define(function() {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
 
-},{}],53:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 (function (process){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
@@ -5244,7 +5221,7 @@ define(function(require) {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
 }).call(this,require("/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":69}],54:[function(require,module,exports){
+},{"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":68}],53:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -5302,7 +5279,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],55:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 (function (process){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
@@ -6233,7 +6210,7 @@ define(function() {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
 }).call(this,require("/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":69}],56:[function(require,module,exports){
+},{"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":68}],55:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -6270,7 +6247,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],57:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 
 /**
@@ -6501,7 +6478,7 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./lib/Promise":40,"./lib/TimeoutError":42,"./lib/apply":43,"./lib/decorators/array":44,"./lib/decorators/flow":45,"./lib/decorators/fold":46,"./lib/decorators/inspect":47,"./lib/decorators/iterate":48,"./lib/decorators/progress":49,"./lib/decorators/timed":50,"./lib/decorators/unhandledRejection":51,"./lib/decorators/with":52}],58:[function(require,module,exports){
+},{"./lib/Promise":39,"./lib/TimeoutError":41,"./lib/apply":42,"./lib/decorators/array":43,"./lib/decorators/flow":44,"./lib/decorators/fold":45,"./lib/decorators/inspect":46,"./lib/decorators/iterate":47,"./lib/decorators/progress":48,"./lib/decorators/timed":49,"./lib/decorators/unhandledRejection":50,"./lib/decorators/with":51}],57:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -6514,7 +6491,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</p>";
 },"useData":true});
 
-},{"hbsfy/runtime":12}],59:[function(require,module,exports){
+},{"hbsfy/runtime":11}],58:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -7625,7 +7602,7 @@ function assert (test, message) {
   if (!test) throw new Error(message || 'Failed assertion')
 }
 
-},{"base64-js":60,"ieee754":61}],60:[function(require,module,exports){
+},{"base64-js":59,"ieee754":60}],59:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -7748,7 +7725,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	module.exports.fromByteArray = uint8ToBase64
 }())
 
-},{}],61:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -7834,7 +7811,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],62:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 var Buffer = require('buffer').Buffer;
 var intSize = 4;
 var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
@@ -7871,7 +7848,7 @@ function hash(buf, fn, hashSize, bigEndian) {
 
 module.exports = { hash: hash };
 
-},{"buffer":59}],63:[function(require,module,exports){
+},{"buffer":58}],62:[function(require,module,exports){
 var Buffer = require('buffer').Buffer
 var sha = require('./sha')
 var sha256 = require('./sha256')
@@ -7970,7 +7947,7 @@ each(['createCredentials'
   }
 })
 
-},{"./md5":64,"./rng":65,"./sha":66,"./sha256":67,"buffer":59}],64:[function(require,module,exports){
+},{"./md5":63,"./rng":64,"./sha":65,"./sha256":66,"buffer":58}],63:[function(require,module,exports){
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
@@ -8135,7 +8112,7 @@ module.exports = function md5(buf) {
   return helpers.hash(buf, core_md5, 16);
 };
 
-},{"./helpers":62}],65:[function(require,module,exports){
+},{"./helpers":61}],64:[function(require,module,exports){
 // Original code adapted from Robert Kieffer.
 // details at https://github.com/broofa/node-uuid
 (function() {
@@ -8168,7 +8145,7 @@ module.exports = function md5(buf) {
 
 }())
 
-},{}],66:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -8271,7 +8248,7 @@ module.exports = function sha1(buf) {
   return helpers.hash(buf, core_sha1, 20, true);
 };
 
-},{"./helpers":62}],67:[function(require,module,exports){
+},{"./helpers":61}],66:[function(require,module,exports){
 
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -8352,7 +8329,7 @@ module.exports = function sha256(buf) {
   return helpers.hash(buf, core_sha256, 32, true);
 };
 
-},{"./helpers":62}],68:[function(require,module,exports){
+},{"./helpers":61}],67:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -8377,7 +8354,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],69:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -8439,7 +8416,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],70:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -8667,14 +8644,14 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require("/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":69}],71:[function(require,module,exports){
+},{"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":68}],70:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],72:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -9264,4 +9241,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require("/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":71,"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":69,"inherits":68}]},{},[1])
+},{"./support/isBuffer":70,"/usr/local/lib/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":68,"inherits":67}]},{},[1])
