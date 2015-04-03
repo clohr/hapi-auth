@@ -2,6 +2,7 @@
 
 var AUTH_PAYLOAD = require('../lib/contstants').AUTH_PAYLOAD;
 var TOKEN_FRESHNESS = require('../lib/contstants').TOKEN_FRESHNESS; // minutes
+var TOKEN_EXPIRES = require('../lib/contstants').TOKEN_EXPIRES; // minutes
 var IRON_PASSWORD = require('../lib/contstants').IRON_PASSWORD;
 var tokenService = require('../lib/tokenService');
 var Hoek = require('hoek');
@@ -34,7 +35,11 @@ var internals = {
 
 exports.register = function(server, options, next) {
     server.ext('onPreAuth', function(request, reply) {
-        var token = server.app.session || request.state && request.state[AUTH_PAYLOAD];
+        var token;
+        if (request.path.indexOf('dist/') >= 0) {
+            return reply.continue();
+        }
+        token = server.app.session || request.state && request.state[AUTH_PAYLOAD];
         if (!token) {
             // token does not exist, get a token before continuing action
             console.log('token does not exist, get a token before continuing action');
@@ -44,10 +49,14 @@ exports.register = function(server, options, next) {
             var tokenLife;
             Hoek.assert(!err, err);
             tokenLife = internals.msToMinutes(Date.now() - unsealed.createdAt);
-            if (tokenLife > TOKEN_FRESHNESS) {
+            if (tokenLife > TOKEN_FRESHNESS && tokenLife < TOKEN_EXPIRES) {
                 // token exists and needs to be pro-actively re-authed before continuing action
                 console.log('token exists and needs to be pro-actively re-authed before continuing action');
                 return internals.reAuthCookie(server, reply, unsealed.authToken);
+            } else if (tokenLife > TOKEN_EXPIRES) {
+                // token has expired, need to get a new token before continuing action
+                console.log('token has expired, need to get a new token before continuing action');
+                return internals.setUpAuthCookie(server, reply);
             }
             // token exists and is valid and within freshness limit, continue action
             return reply.continue();
