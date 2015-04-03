@@ -1,26 +1,26 @@
 {
-  "name": "hapi-yar",
-  "version": "1.0.0",
-  "description": "Reverse proxy with yar for application authentication",
+  "name": "hapi-auth",
+  "version": "2.0.0",
+  "description": "Reverse proxy with iron for application authentication",
   "main": "server.js",
   "scripts": {
     "test": ""
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/clohr/hapi-yar.git"
+    "url": "https://github.com/clohr/hapi-auth.git"
   },
   "keywords": [
     "hapi",
-    "yar",
+    "iron",
     "token"
   ],
   "author": "Christian Lohr <christian.lohr@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/clohr/hapi-yar/issues"
+    "url": "https://github.com/clohr/hapi-auth/issues"
   },
-  "homepage": "https://github.com/clohr/hapi-yar",
+  "homepage": "https://github.com/clohr/hapi-auth",
   "dependencies": {
     "glue": "^2.0.0",
     "good": "^5.1.2",
@@ -32,8 +32,7 @@
     "ramda": "^0.13.0",
     "rest": "^1.3.0",
     "visionary": "^2.0.0",
-    "when": "^3.7.2",
-    "wreck": "^5.4.0"
+    "when": "^3.7.2"
   },
   "devDependencies": {
     "browserify": "^9.0.3",
