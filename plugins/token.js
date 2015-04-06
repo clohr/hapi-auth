@@ -30,6 +30,7 @@ var internals = {
             console.log('token has expired, need to get a new token before continuing action');
             return internals.setUpAuthCookie(request, reply);
         }
+        // token is valid and requires no action to continue
         return reply.continue();
     },
     msToMinutes: R.divide(R.__, 60000)
@@ -38,7 +39,8 @@ var internals = {
 exports.register = function(server, options, next) {
     server.ext('onPreHandler', function(request, reply) {
         var token;
-        if (request.path.indexOf('api/') >= 0 || request.path.indexOf('dist/') >= 0) {
+        // ignore static file routes
+        if (request.path.indexOf('dist/') >= 0) {
             return reply.continue();
         }
         token = request.session && request.session.get(AUTH_PAYLOAD);

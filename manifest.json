@@ -36,6 +36,9 @@
         },
         "yar": {
             "name": "auth_payload",
+            "cache": {
+                "expiresIn": 180000
+            },
             "cookieOptions": {
                 "password": "urbn",
                 "ttl": 180000,

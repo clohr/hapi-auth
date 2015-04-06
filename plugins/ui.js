@@ -1,7 +1,5 @@
 'use strict';
 
-var Hoek = require('hoek');
-
 // web ui
 exports.register = function (server, options, next) {
 	// home
@@ -11,20 +9,9 @@ exports.register = function (server, options, next) {
 		config: {
             description: 'Returns the homepage',
 			handler: function (request, reply) {
-				var endpoints = require('../lib/endpoints');
-				var promise = endpoints.handleData({
-					'method': 'GET',
-					'path': 'http://localhost:9000/api/home',
-					'headers': {
-						'Content-Type': 'application/json'
-					}
-				});
-				promise.then(function (resp) {
-					return reply.view('home', resp.entity);
-				}).catch(function (err) {
-					Hoek.assert(!err, err);
-					return reply.continue();
-				});
+				var filepath = '../data/home.json';
+				var json = require(filepath);
+				return reply.view('home', json);
 			}
 		}
 	});
@@ -35,20 +22,9 @@ exports.register = function (server, options, next) {
 		config: {
             description: 'Returns a Node route',
 			handler: function (request, reply) {
-				var endpoints = require('../lib/endpoints');
-				var promise = endpoints.handleData({
-					'method': 'GET',
-					'path': 'http://localhost:9000/api/page2',
-					'headers': {
-						'Content-Type': 'application/json'
-					}
-				});
-				promise.then(function (resp) {
-					return reply.view('page2', resp.entity);
-				}).catch(function (err) {
-					Hoek.assert(!err, err);
-					return reply.continue();
-				});
+				var filepath = '../data/page2.json';
+				var json = require(filepath);
+				return reply.view('page2', json);
 			}
 		}
 	});

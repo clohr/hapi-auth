@@ -1,6 +1,6 @@
 'use strict';
 
-// handles real services end-point
+// handles real services end-point for client-side xhr requests
 exports.register = function (server, options, next) {
 	server.route({
 		method: options.method,
