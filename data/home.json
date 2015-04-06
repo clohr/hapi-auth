@@ -1,4 +1,4 @@
 {
 	"pageTitle": "Home",
-	"pageContent": "My hapi website using a reverse proxy to communicate with web services and control user authentication." 
+	"pageContent": "My hapi website using yar to handle session management and control user authentication." 
 }
