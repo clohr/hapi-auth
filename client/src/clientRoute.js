@@ -3,13 +3,6 @@
 var endpoints = require('../../lib/endpoints');
 
 var internals = {
-	parse: function parse(content) {
-		var val = decodeURIComponent(content);
-		if (typeof val === 'string') {
-			val = JSON.parse(val);
-		}
-		return val;
-	},
 	makeXHR: function makeXHR(el) {
 		var url = el.getAttribute('href') || '';
 		var promise = endpoints.handleData({
@@ -22,12 +15,11 @@ var internals = {
 		promise.then(function (resp) {
 			var template = require('../../views/partials/pageData.hbs');
 			var content = document.getElementById('pageContent');
-			var parsed = internals.parse(resp.entity);
 			if (!content) {
 				console.log('pageContent not found');
 			}
-			parsed.pageContent = 'This request was made using XHR';
-			content.innerHTML = template(parsed);
+			resp.entity.pageContent = 'This request was made using XHR';
+			content.innerHTML = template(resp.entity);
 		}).catch(function (err) {
 			console.log(err);
 		});

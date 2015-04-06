@@ -10,13 +10,6 @@
             "method": "GET",
             "path": "/api/{p*}" 
         },
-        "./cookie": {
-            "ttl": 180000,
-            "isSecure": false,
-            "path": "/",
-            "isHttpOnly": true,
-            "clearInvalid": true
-        },
         "good": {
             "reporters": [{
                 "reporter": "good-console",
@@ -25,12 +18,6 @@
                     "response": "*"
                 }]
             }]
-        },
-        "./reverse": {
-            "method": "GET",
-            "passThrough": false,
-            "path": "/service/content/{p*}",
-            "proxypath": "http://localhost:9000/api/"
         },
         "./static": {
             "path": "/dist/{filename*}",
@@ -46,6 +33,17 @@
             "layoutPath": "./views/layout",
             "partialsPath": "./views/partials",
             "layout": true
+        },
+        "yar": {
+            "name": "auth_payload",
+            "cookieOptions": {
+                "password": "urbn",
+                "ttl": 180000,
+                "isSecure": false,
+                "path": "/",
+                "isHttpOnly": true,
+                "clearInvalid": true
+            }
         }
     }
 }
