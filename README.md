@@ -9,6 +9,6 @@ Basic auth POC using [hapi](https://github.com/hapijs) [yar](https://github.com/
 * User visits site with invalid token TOKEN_FRESHNESS threshold, but token has not expired, pro-actively re-auth the user
 * User visits site with invalid token TOKEN_FRESHNESS threshold and is expired, generate a new token payload, encrypt, then and store in an HTTP only cookie
 
-## TODO
+## Further Enchancements
 * Add SSL support
 * Restrict by domain name
